@@ -113,7 +113,9 @@ function renderWrite(){
   const gen=el('button',{class:'btn'}); gen.textContent='📨 코드 생성'; writeEl.appendChild(gen);
   const box=el('div',{class:'codebox'}); const ta=el('textarea',{readonly:'true'});
   const cp=el('button',{class:'tbtn'}); cp.textContent='📋 복사'; cp.style.marginTop='6px';
-  box.appendChild(ta); box.appendChild(cp); writeEl.appendChild(box);
+  const nx=el('button',{class:'btn'}); nx.textContent='다음으로 →'; nx.style.marginTop='10px';
+  nx.addEventListener('click',e=>{ e.stopPropagation(); window.location.href='https://anjaeheung.github.io/jongmak/'; });
+  box.appendChild(ta); box.appendChild(cp); box.appendChild(nx); writeEl.appendChild(box);
   gen.onclick=()=>{
     const a=[]; for(let k=0;k<NB;k++)a.push('');
     writeEl.querySelectorAll('.blank input').forEach(inp=>{ a[+inp.dataset.i]=inp.value.trim(); });
