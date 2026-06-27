@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>문제 5 — 투명화의 이능</title>
+<style>
+  :root{--bg:#0c0e13;--panel:#151823;--line:#2a3040;--ink:#e9ecf2;--muted:#8b93a6;--gold:#ffd54a;--ok:#7fd6a0;--no:#ff6b6b;--blue:#5fb4ff;}
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{background:radial-gradient(120% 90% at 50% 0%,#1a1f2b 0%,var(--bg) 60%);color:var(--ink);
+    font-family:"Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+    display:flex;flex-direction:column;align-items:center;min-height:100vh;padding-bottom:40px}
+  header{width:100%;max-width:780px;padding:14px 16px 4px;display:flex;flex-direction:column;gap:10px}
+  .titlerow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  h1{margin:0;font-size:18px;letter-spacing:1px}
+  .tabs{display:flex;gap:8px}
+  .tab{background:#1c2029;border:1px solid var(--line);color:var(--muted);padding:8px 16px;border-radius:10px;
+     cursor:pointer;font-size:13.5px;font-weight:700;font-family:inherit}
+  .tab.on{color:#0e1014;background:var(--gold);border-color:var(--gold)}
+  main{width:100%;max-width:780px;padding:6px 16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0}
+  .rule{background:#171f17;border:1px solid #2f4a2f;border-radius:12px;padding:12px 16px;font-size:13px;color:#cfe0cf;line-height:1.7;margin:10px 0}
+  .rule b{color:var(--ok)}
+  .qtitle{font-size:15px;font-weight:800;color:#dfe3ea;margin-bottom:10px}
+  .qbody{font-size:14.5px;line-height:2.2;color:#dfe2ea;white-space:pre-wrap}
+  .blank{display:inline-flex;align-items:center;gap:4px;margin:0 2px;vertical-align:middle}
+  .blank .lab{font-size:12px;font-weight:800;color:var(--gold)}
+  .blank input{width:54px;background:#0e1118;border:none;border-bottom:2px solid #3a445e;color:var(--blue);
+     font-size:15px;font-family:inherit;padding:2px 4px;text-align:center}
+  .blank input:focus{outline:none;border-bottom-color:var(--gold)}
+  .opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .opts .op{font-size:12.5px;color:#cdd3df;background:#10131b;border:1px solid var(--line);border-radius:8px;padding:5px 9px}
+  .opts .op b{color:var(--gold);margin-right:4px}
+  .namerow{display:flex;align-items:center;gap:10px;margin:6px 0}
+  .namerow input{background:#0e1118;border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 12px;font-size:14px;font-family:inherit;flex:1;max-width:240px}
+  .btn{background:linear-gradient(180deg,#243047,#1a2235);border:1px solid var(--gold);color:var(--gold);font-weight:800;
+     padding:11px 20px;border-radius:11px;cursor:pointer;font-size:14px;font-family:inherit}
+  .btn:hover{background:#2a3550;color:#fff}
+  .tbtn{background:#1c2029;border:1px solid var(--line);color:var(--ink);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12.5px;font-family:inherit}
+  .codebox{margin-top:12px;display:none}
+  .codebox textarea{width:100%;height:70px;background:#0e1118;border:1px solid var(--line);color:#bfe0ff;border-radius:10px;padding:10px;font-size:12px;font-family:ui-monospace,monospace;resize:vertical}
+  .hintline{font-size:12.5px;color:var(--muted);margin:4px 0}
+  .gpaste{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  .gpaste textarea{flex:1;min-width:240px;height:54px;background:#0e1118;border:1px solid var(--line);color:#cfe0ff;border-radius:10px;padding:8px;font-size:12px;font-family:ui-monospace,monospace;resize:vertical}
+  .ans{display:inline-flex;align-items:center;gap:6px;margin:0 3px;padding:1px 4px;border-radius:7px;background:#10131b;vertical-align:middle}
+  .ans .lab{font-size:12px;font-weight:800;color:var(--gold)}
+  .ans .v{color:var(--blue);font-size:15px;min-width:30px;text-align:center}
+  .ans .v.empty{color:var(--muted);font-style:italic;font-size:13px}
+  .ans .tg b{cursor:pointer;font-size:12px;font-weight:800;border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:var(--muted);user-select:none;margin-left:2px}
+  .ans .tg b.o.sel{background:rgba(127,214,160,.18);color:var(--ok);border-color:#2f6f5d}
+  .ans .tg b.x.sel{background:rgba(255,107,107,.18);color:var(--no);border-color:#7a3636}
+  #scorebar{position:sticky;bottom:10px;align-self:center;margin-top:14px;background:#171b27;border:1px solid var(--gold);border-radius:999px;
+     padding:9px 20px;font-weight:800;font-size:15px;color:var(--gold);box-shadow:0 8px 24px rgba(0,0,0,.4);display:none}
+  .who{font-size:13.5px;color:var(--ink);margin:6px 0}.who b{color:var(--gold)}
+  .err{color:var(--no);font-size:12.5px}
+</style>
+</head>
+<body>
+  <header>
+    <div class="titlerow">
+      <h1>문제 5 &mdash; 투명화의 이능</h1>
+      <div class="tabs">
+        <button class="tab on" id="tabWrite">✍️ 답안</button>
+        <button class="tab" id="tabGrade">🧮 GM 채점</button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div id="write"></div>
+    <div id="grade" style="display:none"></div>
+  </main>
+<script>
+/* 문5 빈칸: 번호(1~30)를 적는다. 정답 키는 페이지에 없음(GM 채점). */
+const PARTS = [
+ "투명화의 이능은 ", {lab:'①'}, " 하는 것으로 강제적으로 발동한다.\n",
+ {lab:'②'}, " 의 증언에 따르면 키아라시 코테츠는 ", {lab:'③'}, " 잠드는 모양이다.\n그때, 투명화가 발동하고 있는 것도 그의 증언에서 추측할 수 있다.\n",
+ "또한, ", {lab:'④'}, " 의 증언에서, 키아라시 코테츠는 ", {lab:'⑤'}, " 라는 병이다.\n즉 ", {lab:'⑥'}, " 을 쓰는 것으로, 키아라시 코테츠는 투명화를 눈앞에서 쓸 것이다!!!",
+];
+const OPTIONS = ["눈을 감는다","옷을 벗는다","사랑을 한다","숨을 멈춘다","노래를 부른다","조가미 자코","키아라시 코테츠","카자마 미나토","타니로 테츠지","나나세 네즈키","시타바 세코오","우사다 윙구","죠가사키 쥬에루","도이와 다이스케","죽은 듯이","선 채로","알몸으로","어느샌가","심장병","당뇨병","무호흡 증후군","이중 인격","조현병","권총","독가스","난방","만월의 밤","감기약","니트로글리세린","설탕"];
+let NB=0; PARTS.forEach(p=>{ if(typeof p==='object'){ p.i=NB++; } });
+
+function el(t,a){const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+
+const writeEl=document.getElementById('write'), gradeEl=document.getElementById('grade');
+
+function renderWrite(){
+  writeEl.innerHTML='';
+  const rule=el('div',{class:'rule'});
+  rule.innerHTML='<b>【룰】</b> 키아라시 코테츠에게 투명화를 강제로 쓰게 만들 빈칸 번호를 적으세요.<br>· 먼저 다 맞힌 플레이어에게 <b>7점 추가</b> (동시면 양쪽 +7). · 틀려도 페널티 없음.';
+  writeEl.appendChild(rule);
+  const nr=el('div',{class:'namerow'}); nr.innerHTML='<span style="color:var(--muted);font-size:13px">플레이어 이름</span>';
+  const nameI=el('input',{id:'pname',placeholder:'이름'}); nr.appendChild(nameI); writeEl.appendChild(nr);
+
+  const card=el('div',{class:'card'});
+  const t=el('div',{class:'qtitle'}); t.textContent='문5. 투명화의 이능에 대하여'; card.appendChild(t);
+  const body=el('div',{class:'qbody'});
+  PARTS.forEach(p=>{
+    if(typeof p==='string'){ body.appendChild(document.createTextNode(p)); return; }
+    const w=el('span',{class:'blank'}); const lab=el('span',{class:'lab'}); lab.textContent=p.lab;
+    const inp=el('input',{type:'number',min:'1',max:'30',inputmode:'numeric'}); inp.dataset.i=p.i;
+    w.appendChild(lab); w.appendChild(inp); body.appendChild(w);
+  });
+  card.appendChild(body);
+  // 선택지 목록
+  const oh=el('div',{class:'hintline'}); oh.textContent='◆ 선택지 (번호를 빈칸에 적으세요)'; card.appendChild(oh);
+  const ops=el('div',{class:'opts'});
+  OPTIONS.forEach((o,k)=>{ const d=el('div',{class:'op'}); d.innerHTML='<b>'+(k+1)+'</b>'+o; ops.appendChild(d); });
+  card.appendChild(ops);
+  writeEl.appendChild(card);
+
+  const gen=el('button',{class:'btn'}); gen.textContent='📨 코드 생성'; writeEl.appendChild(gen);
+  const box=el('div',{class:'codebox'}); const ta=el('textarea',{readonly:'true'});
+  const cp=el('button',{class:'tbtn'}); cp.textContent='📋 복사'; cp.style.marginTop='6px';
+  box.appendChild(ta); box.appendChild(cp); writeEl.appendChild(box);
+  gen.onclick=()=>{
+    const a=[]; for(let k=0;k<NB;k++)a.push('');
+    writeEl.querySelectorAll('.blank input').forEach(inp=>{ a[+inp.dataset.i]=inp.value.trim(); });
+    const obj={n:(nameI.value.trim()||'이름없음'),a};
+    const bytes=new TextEncoder().encode(JSON.stringify(obj)); let bin=''; bytes.forEach(b=>bin+=String.fromCharCode(b));
+    ta.value='Q5::'+btoa(bin); box.style.display='block'; ta.scrollIntoView({behavior:'smooth'});
+  };
+  cp.onclick=()=>{ ta.select(); document.execCommand('copy'); cp.textContent='✅ 복사됨'; setTimeout(()=>cp.textContent='📋 복사',1500); };
+}
+
+function renderGrade(){
+  gradeEl.innerHTML='';
+  const card=el('div',{class:'card'});
+  card.innerHTML='<div class="qtitle">🧮 GM 채점</div><div class="hintline">코드를 붙여넣고 「불러오기」. 정답지를 보고 각 빈칸 ○/✗. 먼저 다 맞힌 쪽에 +7은 GM이 판단.</div>';
+  const pr=el('div',{class:'gpaste'}); const ta=el('textarea',{placeholder:'코드 붙여넣기 (Q5::...)'});
+  const load=el('button',{class:'btn'}); load.textContent='불러오기'; const err=el('div',{class:'err'});
+  pr.appendChild(ta); pr.appendChild(load); card.appendChild(pr); card.appendChild(err); gradeEl.appendChild(card);
+  const out=el('div',{}); gradeEl.appendChild(out);
+  const sb=el('div',{id:'scorebar'}); gradeEl.appendChild(sb);
+  load.onclick=()=>{
+    err.textContent=''; let code=ta.value.trim(); if(code.startsWith('Q5::'))code=code.slice(4);
+    let obj; try{ const bin=atob(code); const by=Uint8Array.from(bin,c=>c.charCodeAt(0)); obj=JSON.parse(new TextDecoder().decode(by)); }
+    catch(e){ err.textContent='코드를 읽을 수 없습니다.'; return; }
+    if(!obj||!Array.isArray(obj.a)){ err.textContent='형식이 올바르지 않습니다.'; return; }
+    out.innerHTML='';
+    const grades=new Array(NB).fill(null);
+    const who=el('div',{class:'who'}); who.innerHTML='플레이어: <b>'+(obj.n||'이름없음')+'</b>'; out.appendChild(who);
+    const card2=el('div',{class:'card'}); const body=el('div',{class:'qbody'});
+    function upd(){ const s=grades.filter(g=>g==='o').length; sb.style.display='block'; sb.textContent='정답 '+s+' / '+NB+'  (전부 정답이면 +7)'; }
+    PARTS.forEach(p=>{
+      if(typeof p==='string'){ body.appendChild(document.createTextNode(p)); return; }
+      const wrap=el('span',{class:'ans'}); const lab=el('span',{class:'lab'}); lab.textContent=p.lab;
+      const v=el('span',{class:'v'}); const val=obj.a[p.i]; if(val){v.textContent=val;}else{v.textContent='(빈칸)';v.classList.add('empty');}
+      const tg=el('span',{class:'tg'}); const ob=el('b',{class:'o'}); ob.textContent='○'; const xb=el('b',{class:'x'}); xb.textContent='✗';
+      function paint(){ ob.classList.toggle('sel',grades[p.i]==='o'); xb.classList.toggle('sel',grades[p.i]==='x'); }
+      ob.onclick=()=>{ grades[p.i]=grades[p.i]==='o'?null:'o'; paint(); upd(); };
+      xb.onclick=()=>{ grades[p.i]=grades[p.i]==='x'?null:'x'; paint(); upd(); };
+      paint(); tg.appendChild(ob); tg.appendChild(xb);
+      wrap.appendChild(lab); wrap.appendChild(v); wrap.appendChild(tg); body.appendChild(wrap);
+    });
+    card2.appendChild(body); out.appendChild(card2); upd(); out.scrollIntoView({behavior:'smooth'});
+  };
+}
+
+const tabW=document.getElementById('tabWrite'),tabG=document.getElementById('tabGrade');
+tabW.onclick=()=>{ tabW.classList.add('on'); tabG.classList.remove('on'); writeEl.style.display=''; gradeEl.style.display='none'; };
+tabG.onclick=()=>{ tabG.classList.add('on'); tabW.classList.remove('on'); writeEl.style.display='none'; gradeEl.style.display=''; renderGrade(); };
+renderWrite();
+</script>
+</body>
+</html>
